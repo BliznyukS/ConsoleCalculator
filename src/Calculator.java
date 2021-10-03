@@ -12,8 +12,8 @@ public class Calculator {
             String inputExpression;
 
             try {
-                System.out.println("Please type your expression. Support +,-,*,/,^,%,(,) :");
-                System.out.println("Or type 'exit' to stop the program");
+                System.out.println("Please type your expression. Support +,-,*,/,^,%,(,)");
+                System.out.println("Or type 'exit' to stop the program.");
                 inputExpression = d.readLine();
                 if (inputExpression.equals("exit")) {
                     break;
@@ -35,7 +35,7 @@ public class Calculator {
      * @return output string with RPN
      */
     private static String convertingReversePolishNotation(String userExpression) throws Exception {
-        StringBuilder sbStack = new StringBuilder(""), sbOut = new StringBuilder("");
+        StringBuilder sbStack = new StringBuilder(""), resultStringRPN = new StringBuilder("");
         char charInput, charTemporary;
 
         for (int i = 0; i < userExpression.length(); i++) {
@@ -44,14 +44,14 @@ public class Calculator {
                 while (sbStack.length() > 0) {
                     charTemporary = sbStack.substring(sbStack.length() - 1).charAt(0);
                     if (isOperator(charTemporary) && (operatorPriority(charInput) <= operatorPriority(charTemporary))) {
-                        sbOut.append(" ").append(charTemporary).append(" ");
+                        resultStringRPN.append(" ").append(charTemporary).append(" ");
                         sbStack.setLength(sbStack.length() - 1);
                     } else {
-                        sbOut.append(" ");
+                        resultStringRPN.append(" ");
                         break;
                     }
                 }
-                sbOut.append(" ");
+                resultStringRPN.append(" ");
                 sbStack.append(charInput);
             } else if ('(' == charInput) {
                 sbStack.append(charInput);
@@ -61,24 +61,24 @@ public class Calculator {
                     if (sbStack.length() < 1) {
                         throw new Exception("Error parsing parentheses. Check if the expression is correct");
                     }
-                    sbOut.append(" ").append(charTemporary);
+                    resultStringRPN.append(" ").append(charTemporary);
                     sbStack.setLength(sbStack.length() - 1);
                     charTemporary = sbStack.substring(sbStack.length() - 1).charAt(0);
                 }
                 sbStack.setLength(sbStack.length() - 1);
             } else {
                 // If the character is not an operator, add it to the output sequence
-                sbOut.append(charInput);
+                resultStringRPN.append(charInput);
             }
         }
 
         // If there are operators left on the stack, add them to the input line
         while (sbStack.length() > 0) {
-            sbOut.append(" ").append(sbStack.substring(sbStack.length() - 1));
+            resultStringRPN.append(" ").append(sbStack.substring(sbStack.length() - 1));
             sbStack.setLength(sbStack.length() - 1);
         }
 
-        return sbOut.toString();
+        return resultStringRPN.toString();
     }
 
     /**
@@ -164,7 +164,7 @@ public class Calculator {
                     stack.push(dA);
                 }
             } catch (Exception e) {
-                throw new Exception("Invalid symbol in expression ");
+                throw new Exception("Incorrect symbol input in expression. Please check your expression. ");
             }
         }
 
