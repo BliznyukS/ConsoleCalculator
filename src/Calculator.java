@@ -5,21 +5,30 @@ import java.util.Deque;
 import java.util.StringTokenizer;
 
 public class Calculator {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         while (true) {
 
             BufferedReader d = new BufferedReader(new InputStreamReader(System.in));
             String inputExpression;
 
             try {
-                System.out.println("Please type your expression. Support +,-,*,/,^,%,(,)");
+                System.out.println("Please type your expression. Support symbols : +,-,*,/,^,%,(,)");
                 System.out.println("Or type 'exit' to stop the program.");
                 inputExpression = d.readLine();
                 if (inputExpression.equals("exit")) {
                     break;
                 } else {
-                    inputExpression = convertingReversePolishNotation(inputExpression);
-                    System.out.println(calculatingExpression(inputExpression));
+
+                    if (inputExpression.contains("//")) {
+                        inputExpression = inputExpression.replace("//", "/");
+                        inputExpression = convertingReversePolishNotation(inputExpression);
+                        double result = calculatingExpression(inputExpression);
+                        System.out.println("Result is : " + result);
+                    } else {
+                        inputExpression = convertingReversePolishNotation(inputExpression);
+                        int result = (int) calculatingExpression(inputExpression);
+                        System.out.println("Result is : " + result);
+                    }
                 }
 
             } catch (Exception e) {
@@ -59,7 +68,7 @@ public class Calculator {
                 charTemporary = sbStack.substring(sbStack.length() - 1).charAt(0);
                 while ('(' != charTemporary) {
                     if (sbStack.length() < 1) {
-                        throw new Exception("Error parsing parentheses. Check if the expression is correct");
+                        throw new Exception("Error parsing parentheses. Check if the expression is correct.");
                     }
                     resultStringRPN.append(" ").append(charTemporary);
                     sbStack.setLength(sbStack.length() - 1);
@@ -77,7 +86,7 @@ public class Calculator {
             resultStringRPN.append(" ").append(sbStack.substring(sbStack.length() - 1));
             sbStack.setLength(sbStack.length() - 1);
         }
-
+        System.out.println("Print RPN view - " + resultStringRPN);
         return resultStringRPN.toString();
     }
 
@@ -118,14 +127,15 @@ public class Calculator {
     /**
      * Considers an expression written in reverse Polish notation
      *
-     * @param sIn
+     * @param inputExpression
      * @return double result
      */
-    private static double calculatingExpression(String sIn) throws Exception {
+    private static double calculatingExpression(String inputExpression) throws Exception {
+
         double dA = 0, dB = 0;
         String sTmp;
         Deque<Double> stack = new ArrayDeque<Double>();
-        StringTokenizer st = new StringTokenizer(sIn);
+        StringTokenizer st = new StringTokenizer(inputExpression);
 
         while (st.hasMoreTokens()) {
             try {
@@ -158,6 +168,7 @@ public class Calculator {
                         default:
                             throw new Exception("Invalid operation " + sTmp);
                     }
+                    System.out.println("Print results step by step - " + dA);
                     stack.push(dA);
                 } else {
                     dA = Double.parseDouble(sTmp);
@@ -169,9 +180,8 @@ public class Calculator {
         }
 
         if (stack.size() > 1) {
-            throw new Exception("The number of operators does not match the number of operands ");
+            throw new Exception("The number of operators does not match the number of operands.");
         }
-
         return stack.pop();
     }
 }
